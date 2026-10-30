@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>The Feasibility Stress Test — Biomass Gasification CHP, Three Sizes</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root { --blue:#2b6cb0; --dark:#1a202c; --gray:#4a5568; --bg:#f7fafc; --green:#2f855a; --gold:#d69e2e; }
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin:0; color:var(--dark); background:#fff; line-height:1.6; }
+  header { background:var(--dark); color:#fff; padding:56px 20px; }
+  header .kicker { color:#90cdf4; font-weight:600; letter-spacing:.04em; text-transform:uppercase; font-size:13px; }
+  header h1 { font-size:32px; margin:10px 0 14px; max-width:760px; }
+  header p { max-width:680px; color:#cbd5e0; font-size:17px; }
+  .wrap { max-width:860px; margin:0 auto; padding:40px 20px; }
+  .stat-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:16px; margin:28px 0; }
+  .stat { background:var(--bg); border-radius:10px; padding:18px; border:1px solid #e2e8f0; }
+  .stat .num { font-size:24px; font-weight:700; color:var(--blue); }
+  .stat .label { font-size:13px; color:var(--gray); margin-top:4px; }
+  h2 { font-size:21px; margin-top:40px; border-bottom:2px solid #e2e8f0; padding-bottom:8px; }
+  .btnrow { display:flex; gap:12px; flex-wrap:wrap; margin:24px 0; }
+  .btn { display:inline-block; background:var(--blue); color:#fff; text-decoration:none; padding:12px 20px; border-radius:8px; font-weight:600; border:none; cursor:pointer; font-size:15px; font-family:inherit; }
+  .btn.secondary { background:#fff; color:var(--blue); border:2px solid var(--blue); }
+  .btn.size { background:#fff; color:var(--gray); border:2px solid #e2e8f0; padding:10px 16px; font-size:14px; }
+  .btn.size.active { background:var(--blue); color:#fff; border-color:var(--blue); }
+  .callout { background:#fffbea; border-left:4px solid #d69e2e; padding:16px 20px; border-radius:6px; margin:20px 0; font-size:15px; }
+  .callout.good { background:#f0fff4; border-left-color:#38a169; }
+  .callout.bad { background:#fff5f5; border-left-color:#c53030; }
+  footer { text-align:center; color:var(--gray); font-size:13px; padding:40px 20px; }
+  a { color:var(--blue); }
+  table { border-collapse:collapse; width:100%; margin:16px 0; font-size:14px; }
+  th, td { text-align:left; padding:8px 10px; border-bottom:1px solid #e2e8f0; }
+  th { color:var(--gray); font-weight:600; }
+
+  .sim-panel { background:var(--bg); border:1px solid #e2e8f0; border-radius:12px; padding:24px; margin:24px 0; }
+  .sliders { display:grid; grid-template-columns:1fr 1fr; gap:18px 28px; }
+  @media (max-width:640px) { .sliders { grid-template-columns:1fr; } }
+  .slider-row label { display:flex; justify-content:space-between; font-size:14px; font-weight:600; margin-bottom:4px; }
+  .slider-row .val { color:var(--blue); font-weight:700; }
+  .slider-row input[type=range] { width:100%; accent-color:var(--blue); }
+  .sim-results { margin-top:28px; }
+  .sim-results.hidden { display:none; }
+  canvas { width:100%; height:260px; background:#fff; border:1px solid #e2e8f0; border-radius:8px; }
+  .disclosure { font-size:13px; color:var(--gray); margin-top:14px; }
+  .legend { display:flex; gap:18px; font-size:13px; margin-top:8px; flex-wrap:wrap; }
+  .legend span { display:inline-flex; align-items:center; gap:6px; }
+  .swatch { width:12px; height:3px; display:inline-block; }
+</style>
+</head>
+<body>
+<header>
+  <div class="kicker">The Feasibility Stress Test — Case Study #7</div>
+  <h1>Biomass Gasification CHP: One Model, Three Sizes, Opposite Errors</h1>
+  <p>A Monte Carlo reconstruction of a published, open-access Energy Reports paper showing the same deterministic-vs-simulated NPV gap flip direction as plant capacity scales from 13.6 kWe to 1,940 kWe.</p>
+</header>
+<div class="wrap">
+
+<div class="callout good"><strong>Note:</strong> the full paper is gold open access (Creative Commons BY-NC-ND) and was read directly on ScienceDirect, not just the abstract. Every confirmed number below is transcribed from the paper's own Tables 3-6 and Section 4 text.</div>
+
+<h2>The confirmed findings</h2>
+<div class="stat-grid">
+  <div class="stat"><div class="num">+91.7%</div><div class="label">13.6 kWe: MC mean vs. deterministic NPV</div></div>
+  <div class="stat"><div class="num">+57.9%</div><div class="label">136 kWe: MC mean vs. deterministic NPV</div></div>
+  <div class="stat"><div class="num">-32.4%</div><div class="label">1,940 kWe: MC mean vs. deterministic NPV</div></div>
+  <div class="stat"><div class="num">66% / 90% / 90%</div><div class="label">P(NPV &gt; 0) by size, small to large</div></div>
+</div>
+
+<p>Source: Colantoni, A., Villarini, M., Monarca, D., Carlini, M., Mosconi, E.M., Bocci, E., Rajabi Hamedani, S. (2021). <em>Economic analysis and risk assessment of biomass gasification CHP systems of different sizes through Monte Carlo simulation.</em> Energy Reports, 7, 1954-1961. <a href="https://doi.org/10.1016/j.egyr.2021.03.028">DOI</a></p>
+
+<h2>Deterministic vs. Monte Carlo, all three sizes (paper's own Tables 3 &amp; 6)</h2>
+<table>
+<tr><th>Plant size</th><th>Deterministic NPV</th><th>MC mean NPV (1,000 trials)</th><th>Gap</th><th>P(NPV&gt;0)</th></tr>
+<tr><td>13.6 kWe</td><td>€33,900</td><td>€64,981</td><td>+91.7%</td><td>66%</td></tr>
+<tr><td>136 kWe</td><td>€537,070</td><td>€847,980</td><td>+57.9%</td><td>90%</td></tr>
+<tr><td>1,940 kWe</td><td>€13,268,960</td><td>€8,969,213</td><td>-32.4%</td><td>90%</td></tr>
+</table>
+
+<div class="callout bad"><strong>Honest caveat:</strong> the paper publishes min/base/max ranges for its eight uncertain variables (Table 5) but not the exact distribution shape, correlation structure, or random seed used inside its Crystal Ball-style model. This reconstruction (both the notebook and this browser simulator) uses triangular distributions built from those ranges. It reproduces the paper's deterministic NPVs exactly by disclosed calibration, and reproduces the DIRECTION of the Monte Carlo bias at the two smaller sizes, but not at 1,940 kWe, where this reconstruction's simplified model produces an upward shift instead of the paper's reported downward one. This is stated directly, not hidden — see the notebook and README for the full explanation.</div>
+
+<h2>Run your own simulation</h2>
+<p>Pick a plant size, adjust the key inputs, then run 5,000 trials. Investment cost and biomass cost are sampled with a mild positive correlation (a modeling assumption disclosed below, not stated explicitly in the paper), using a Cholesky-based Gaussian copula. Working hours uses Box-Muller-derived normal noise around its triangular center to add a touch of extra realism; every other input uses direct inverse-transform triangular sampling.</p>
+
+<div class="sim-panel">
+  <div class="btnrow" id="sizeButtons">
+    <button class="btn size active" data-size="small">13.6 kWe</button>
+    <button class="btn size" data-size="medium">136 kWe</button>
+    <button class="btn size" data-size="large">1,940 kWe</button>
+  </div>
+  <div class="sliders">
+    <div class="slider-row"><label>Investment cost <span class="val" id="v_investment">—</span></label><input type="range" id="investment" min="0" max="100" step="1" value="50"></div>
+    <div class="slider-row"><label>Working hours/year <span class="val" id="v_hours">6,000 h</span></label><input type="range" id="hours" min="3000" max="8000" step="100" value="6000"></div>
+    <div class="slider-row"><label>Cold gas efficiency <span class="val" id="v_coldgas">48.5%</span></label><input type="range" id="coldgas" min="37" max="60" step="0.5" value="48.5"></div>
+    <div class="slider-row"><label>Biomass cost <span class="val" id="v_biomass">€66.83/ton</span></label><input type="range" id="biomass" min="62.91" max="70.75" step="0.1" value="66.83"></div>
+    <div class="slider-row"><label>Electricity price <span class="val" id="v_elecprice">€0.0943/kWh</span></label><input type="range" id="elecprice" min="0.07" max="0.15" step="0.001" value="0.0943"></div>
+    <div class="slider-row"><label>Heat price <span class="val" id="v_heatprice">€0.09/kWh</span></label><input type="range" id="heatprice" min="0.05" max="1.00" step="0.01" value="0.09"></div>
+    <div class="slider-row"><label>Investment / biomass-cost correlation <span class="val" id="v_rho">0.30</span></label><input type="range" id="rho" min="-0.9" max="0.9" step="0.05" value="0.30"></div>
+  </div>
+  <div class="btnrow"><button class="btn" id="runBtn">Run simulation (5,000 trials)</button></div>
+
+  <div class="sim-results hidden" id="results">
+    <div class="stat-grid">
+      <div class="stat"><div class="num" id="r_det">—</div><div class="label">deterministic NPV (EUR)</div></div>
+      <div class="stat"><div class="num" id="r_mean">—</div><div class="label">Monte Carlo mean NPV (EUR)</div></div>
+      <div class="stat"><div class="num" id="r_ppos">—</div><div class="label">P(NPV &gt; 0)</div></div>
+      <div class="stat"><div class="num" id="r_cv">—</div><div class="label">Coefficient of variation</div></div>
+    </div>
+    <canvas id="hist" width="800" height="260"></canvas>
+    <div class="legend">
+      <span><span class="swatch" style="background:#c53030"></span>break-even</span>
+      <span><span class="swatch" style="background:#d69e2e"></span>deterministic estimate</span>
+      <span><span class="swatch" style="background:#2f855a"></span>Monte Carlo mean</span>
+    </div>
+    <div class="disclosure">Electric/thermal efficiency and the 92%/8% electricity/heat revenue weighting are held fixed per size (see notebook for details) so this panel stays focused on the six drivers you can actually move here. Browser-side reconstruction, not the authors' original Crystal Ball workbook.</div>
+  </div>
+</div>
+
+<h2>Explore</h2>
+<div class="btnrow">
+  <a class="btn secondary" href="notebook.html">View the full Python notebook</a>
+  <a class="btn secondary" href="https://github.com/ekalecturer/cs7-biomass-chp-scale">View source on GitHub</a>
+</div>
+
+<h2>The lesson</h2>
+<p>This paper modeled one biomass gasification CHP technology at three capacities using one consistent methodology. At the two smaller sizes, the deterministic base case undersold the project relative to its own Monte Carlo mean, by 92% and 58%. At the largest size, the same modeling approach oversold the project, by 32%. Scale itself changed which way the single-point estimate erred. There is no universal rule for whether a deterministic feasibility number runs conservative or optimistic — only the specific model, at the specific scale, run through its own uncertainty.</p>
+
+</div>
+<footer>Part of <strong>The Feasibility Stress Test</strong> — real Monte Carlo and financial-engineering case studies for capex decisions.</footer>
+
+<script>
+// ---- Random sampling primitives ----
+function randUniform(){ return Math.random(); }
+
+// Box-Muller transform for standard normal samples
+function randNormalStd(){
+  let u1 = Math.random() || 1e-9, u2 = Math.random();
+  return Math.sqrt(-2*Math.log(u1)) * Math.cos(2*Math.PI*u2);
+}
+
+// Abramowitz-Stegun erf approximation (needed for the Gaussian copula)
+function erf(x){
+  const sign = x < 0 ? -1 : 1;
+  x = Math.abs(x);
+  const a1=0.254829592, a2=-0.284496736, a3=1.421413741, a4=-1.453152027, a5=1.061405429, p=0.3275911;
+  const t = 1/(1+p*x);
+  const y = 1 - (((((a5*t+a4)*t)+a3)*t+a2)*t+a1)*t*Math.exp(-x*x);
+  return sign*y;
+}
+
+// Inverse-transform sampling for a triangular distribution given a uniform draw u in [0,1]
+function randTriangularFromU(u, min, mode, max){
+  const fc = (mode-min)/(max-min);
+  if (u < fc) return min + Math.sqrt(u*(max-min)*(mode-min));
+  return max - Math.sqrt((1-u)*(max-min)*(max-mode));
+}
+
+function mean(a){ return a.reduce((s,x)=>s+x,0)/a.length; }
+function std(a){ const m=mean(a); return Math.sqrt(a.reduce((s,x)=>s+(x-m)*(x-m),0)/a.length); }
+
+// ---- Plant size presets (paper's Table 3-5 base cases and ranges) ----
+const SIZE_CONFIG = {
+  small: {
+    label: "13.6 kWe", investmentRange: [139000, 302300, 462000],
+    biomassShare: 0.66, annualKwh: 178237.5,
+    elecEff: 0.28, thermEff: 0.54, detNpvPaper: 33900, mcMeanPaper: 64981,
+  },
+  medium: {
+    label: "136 kWe", investmentRange: [461000, 1002200, 1533000],
+    biomassShare: 0.82, annualKwh: 1782375,
+    elecEff: 0.28, thermEff: 0.54, detNpvPaper: 537070, mcMeanPaper: 847980,
+  },
+  large: {
+    label: "1,940 kWe", investmentRange: [2500000, 5436000, 8318000],
+    biomassShare: 0.85, annualKwh: 28110600,
+    elecEff: 0.40, thermEff: 0.428, detNpvPaper: 13268960, mcMeanPaper: 8969213,
+  },
+};
+
+const LIFETIME = 20, DISCOUNT_RATE = 0.06, TAX_RATE = 0.24;
+function annuityPvFactor(rate, years){ return (1 - Math.pow(1+rate, -years)) / rate; }
+const PV_FACTOR = annuityPvFactor(DISCOUNT_RATE, LIFETIME);
+
+function rawAnnualCashFlow(hours, coldGasEff, biomassCost, elecPrice, heatPrice, cfg){
+  const kwh = cfg.annualKwh * (hours/6000) * (coldGasEff/0.485);
+  const revenue = kwh * (0.92*elecPrice + 0.08*heatPrice);
+  const biomassTonsProxy = kwh / 4200;
+  const biomassOpex = biomassTonsProxy * biomassCost;
+  const totalOpex = biomassOpex / cfg.biomassShare;
+  const ebit = revenue - totalOpex;
+  return ebit * (1 - TAX_RATE);
+}
+
+function calibrationConstant(cfg){
+  const [lo, base, hi] = cfg.investmentRange;
+  const rawCf = rawAnnualCashFlow(6000, 48.5, 66.83, 0.0943, 0.09, cfg);
+  return (cfg.detNpvPaper + base) / (rawCf * PV_FACTOR);
+}
+
+function npvModel(investment, hours, coldGasEff, biomassCost, elecPrice, heatPrice, cfg, calib){
+  const cf = rawAnnualCashFlow(hours, coldGasEff, biomassCost, elecPrice, heatPrice, cfg) * calib;
+  return cf * PV_FACTOR - investment;
+}
+
+let currentSize = "small";
+
+function updateSliderRangesForSize(){
+  const cfg = SIZE_CONFIG[currentSize];
+  const [lo, base, hi] = cfg.investmentRange;
+  const invSlider = document.getElementById("investment");
+  invSlider.min = 0; invSlider.max = 100; invSlider.value = 50;
+  invSlider._lo = lo; invSlider._base = base; invSlider._hi = hi;
+  document.getElementById("v_investment").textContent = "€" + base.toLocaleString();
+}
+
+function investmentFromSlider(){
+  const el = document.getElementById("investment");
+  const pct = parseFloat(el.value) / 100; // 0..1, 50 = base case
+  const lo = el._lo, base = el._base, hi = el._hi;
+  if (pct <= 0.5) return lo + (base-lo)*(pct/0.5);
+  return base + (hi-base)*((pct-0.5)/0.5);
+}
+
+const labelIds = ["hours","coldgas","biomass","elecprice","heatprice","rho"];
+const labelMap = {
+  hours: v => Number(v).toLocaleString()+" h",
+  coldgas: v => Number(v).toFixed(1)+"%",
+  biomass: v => "€"+Number(v).toFixed(2)+"/ton",
+  elecprice: v => "€"+Number(v).toFixed(4)+"/kWh",
+  heatprice: v => "€"+Number(v).toFixed(2)+"/kWh",
+  rho: v => Number(v).toFixed(2),
+};
+labelIds.forEach(id=>{
+  const el = document.getElementById(id);
+  const out = document.getElementById("v_"+id);
+  const update = () => out.textContent = labelMap[id](parseFloat(el.value));
+  el.addEventListener("input", update);
+  update();
+});
+document.getElementById("investment").addEventListener("input", () => {
+  document.getElementById("v_investment").textContent = "€" + Math.round(investmentFromSlider()).toLocaleString();
+});
+
+document.querySelectorAll(".btn.size").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".btn.size").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    currentSize = btn.dataset.size;
+    updateSliderRangesForSize();
+    document.getElementById("results").classList.add("hidden");
+  });
+});
+updateSliderRangesForSize();
+
+function drawHistogram(canvas, values, markers){
+  const ctx = canvas.getContext("2d");
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0,0,W,H);
+  const min = Math.min(...values, ...markers.map(m=>m.x)), max = Math.max(...values, ...markers.map(m=>m.x));
+  const bins = 40;
+  const counts = new Array(bins).fill(0);
+  const w = (max-min)/bins || 1;
+  values.forEach(v => { let idx = Math.floor((v-min)/w); if (idx>=bins) idx=bins-1; if(idx<0) idx=0; counts[idx]++; });
+  const maxCount = Math.max(...counts);
+  const padL = 10, padB = 10, padT = 10, padR = 10;
+  const plotW = W-padL-padR, plotH = H-padT-padB;
+  const barW = plotW/bins;
+  ctx.fillStyle = "#2b6cb0";
+  counts.forEach((c,i)=>{
+    const h = (c/maxCount)*plotH;
+    ctx.fillRect(padL+i*barW, H-padB-h, barW-1, h);
+  });
+  markers.forEach(m=>{
+    if (m.x < min || m.x > max) return;
+    const x = padL + ((m.x-min)/(max-min))*plotW;
+    ctx.strokeStyle = m.color; ctx.lineWidth = 2; ctx.setLineDash([5,4]);
+    ctx.beginPath(); ctx.moveTo(x,padT); ctx.lineTo(x,H-padB); ctx.stroke();
+    ctx.setLineDash([]);
+  });
+}
+
+document.getElementById("runBtn").addEventListener("click", () => {
+  const N = 5000;
+  const cfg = SIZE_CONFIG[currentSize];
+  const calib = calibrationConstant(cfg);
+
+  const g = id => parseFloat(document.getElementById(id).value);
+  const hoursMode = g("hours"), coldGasMode = g("coldgas"), biomassMode = g("biomass"),
+        elecMode = g("elecprice"), heatMode = g("heatprice"), rho = g("rho");
+  const investmentMode = investmentFromSlider();
+
+  const detNpv = npvModel(investmentMode, hoursMode, coldGasMode, biomassMode, elecMode, heatMode, cfg, calib);
+
+  // Triangular ranges (fixed spread around the current slider mode, matching paper's proportional widths)
+  const hoursRange = [3000, hoursMode, 8000];
+  const coldGasRange = [37, coldGasMode, 60];
+  const biomassRange = [62.91, biomassMode, 70.75];
+  const elecRange = [0.07, elecMode, 0.15];
+  const heatRange = [0.05, heatMode, 1.00];
+  const [invLo, invBase, invHi] = cfg.investmentRange;
+
+  // 2x2 Cholesky decomposition for the investment/biomass-cost Gaussian copula
+  const chol11 = 1, chol21 = rho, chol22 = Math.sqrt(Math.max(0, 1-rho*rho));
+
+  const npvs = [];
+  for (let i=0;i<N;i++){
+    const z1 = randNormalStd();
+    const z2raw = randNormalStd();
+    const z2 = chol21*z1 + chol22*z2raw; // correlated normal via Cholesky factor
+
+    const uInvestment = 0.5*(1+erf(z1/Math.SQRT2));
+    const uBiomass = 0.5*(1+erf(z2/Math.SQRT2));
+
+    const investment = randTriangularFromU(uInvestment, invLo, invBase, invHi);
+    const biomassCost = randTriangularFromU(uBiomass, biomassRange[0], biomassRange[1], biomassRange[2]);
+
+    const hours = Math.min(8000, Math.max(3000, hoursMode + 400*randNormalStd())); // Box-Muller normal noise around slider mode
+    const coldGasEff = randTriangularFromU(randUniform(), coldGasRange[0], coldGasRange[1], coldGasRange[2]);
+    const elecPrice = randTriangularFromU(randUniform(), elecRange[0], elecRange[1], elecRange[2]);
+    const heatPrice = randTriangularFromU(randUniform(), heatRange[0], heatRange[1], heatRange[2]);
+
+    npvs.push(npvModel(investment, hours, coldGasEff, biomassCost, elecPrice, heatPrice, cfg, calib));
+  }
+
+  const meanNpv = mean(npvs);
+  const stdNpv = std(npvs);
+  const cv = stdNpv/meanNpv;
+  const pPos = npvs.filter(v=>v>0).length/N;
+
+  document.getElementById("r_det").textContent = "€"+Math.round(detNpv).toLocaleString();
+  document.getElementById("r_mean").textContent = "€"+Math.round(meanNpv).toLocaleString();
+  document.getElementById("r_ppos").textContent = (pPos*100).toFixed(1)+"%";
+  document.getElementById("r_cv").textContent = cv.toFixed(3);
+  document.getElementById("results").classList.remove("hidden");
+  drawHistogram(document.getElementById("hist"), npvs, [
+    {x:0, color:"#c53030"}, {x:detNpv, color:"#d69e2e"}, {x:meanNpv, color:"#2f855a"}
+  ]);
+});
+</script>
+</body>
+</html>

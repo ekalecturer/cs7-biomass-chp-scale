@@ -1,0 +1,39 @@
+{
+  "source_paper": "Colantoni et al. (2021), Energy Reports 7, 1954-1961, https://doi.org/10.1016/j.egyr.2021.03.028",
+  "trials_per_size": 10000,
+  "sizes": {
+    "13.6 kWe": {
+      "deterministic_npv_reconstruction": 33900.0,
+      "deterministic_npv_paper": 33900,
+      "mc_mean_npv_reconstruction": 168431.73223738413,
+      "mc_mean_npv_paper": 64981,
+      "mc_std_npv_reconstruction": 158739.85998299954,
+      "mc_std_npv_paper": 44147,
+      "prob_positive_reconstruction": 0.8618,
+      "prob_positive_paper": 0.66,
+      "coefficient_of_variation_reconstruction": 0.9424581572270178
+    },
+    "136 kWe": {
+      "deterministic_npv_reconstruction": 537070.0,
+      "deterministic_npv_paper": 537070,
+      "mc_mean_npv_reconstruction": 1105352.6175567443,
+      "mc_mean_npv_paper": 847980,
+      "mc_std_npv_reconstruction": 668709.7907299454,
+      "mc_std_npv_paper": 498907,
+      "prob_positive_reconstruction": 0.9714,
+      "prob_positive_paper": 0.9,
+      "coefficient_of_variation_reconstruction": 0.6049741775688305
+    },
+    "1940 kWe": {
+      "deterministic_npv_reconstruction": 13268960.0,
+      "deterministic_npv_paper": 13268960,
+      "mc_mean_npv_reconstruction": 19983892.116583403,
+      "mc_mean_npv_paper": 8969213,
+      "mc_std_npv_reconstruction": 7870360.544872295,
+      "mc_std_npv_paper": 4806418,
+      "prob_positive_reconstruction": 1.0,
+      "prob_positive_paper": 0.9,
+      "coefficient_of_variation_reconstruction": 0.3938352198339365
+    }
+  }
+}
